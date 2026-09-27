@@ -1,9 +1,8 @@
 package com.douglasfg.FinanceAssistantBackend.entities;
 
+import java.time.LocalDate;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDate;
 
 @Entity
 @Data
@@ -12,19 +11,18 @@ import java.time.LocalDate;
 @Builder
 public class GoalExpense {
 
-    @EmbeddedId
-    private GoalExpenseId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // chave primária
 
     @ManyToOne
-    @MapsId("goalId")
-    @JoinColumn(name = "goal_id")
+    @JoinColumn(name = "goal_id", nullable = false)
     private Goal goal;
 
     @ManyToOne
-    @MapsId("expenseId")
-    @JoinColumn(name = "expense_id")
+    @JoinColumn(name = "expense_id", nullable = false)
     private Expense expense;
 
-    // Campo extra opcional para auditoria
-    private LocalDate linkedAt ;
+    // Campo extra opcional (ex: data em que a despesa foi vinculada à meta)
+    private LocalDate linkedAt;
 }

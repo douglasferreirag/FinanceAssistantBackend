@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.douglasfg.FinanceAssistantBackend.entities.Category;
 import com.douglasfg.FinanceAssistantBackend.repositories.CategoryRepository;
 
+
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -21,9 +22,8 @@ public class CategoryService {
 
 
   
-    public Category save(String name) {
-        return categoryRepository.findByName(name)
-                .orElseGet(() -> categoryRepository.save(new Category(name)));
+    public Category save(Category category) {
+       return categoryRepository.save(category);
     }
 
     public List<Category> findAll() {

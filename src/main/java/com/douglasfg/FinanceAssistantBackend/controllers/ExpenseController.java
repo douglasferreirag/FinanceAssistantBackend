@@ -28,6 +28,7 @@ public class ExpenseController {
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody Expense expense) {
         try {
+            
             Expense saved = expenseService.save(expense);
             return ResponseEntity.status(HttpStatus.CREATED).body(saved); // 201 Created
         } catch (IllegalArgumentException e) {
@@ -56,8 +57,9 @@ public class ExpenseController {
     @GetMapping("/sumByMonthAndYear")
     public ResponseEntity<Double> sumByMonthAndYear(
             @RequestParam int month,
-            @RequestParam int year) {
-        Double result = expenseService.sumByMonthAndYear(month, year);
+            @RequestParam int year,
+            @RequestParam long idPessoa) {
+        Double result = expenseService.sumByMonthAndYear(month, year, idPessoa);
         return ResponseEntity.ok(result);
     }
 
