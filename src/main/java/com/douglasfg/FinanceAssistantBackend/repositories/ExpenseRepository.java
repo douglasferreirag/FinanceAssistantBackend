@@ -4,13 +4,12 @@ package com.douglasfg.FinanceAssistantBackend.repositories;
 
 
 
-import com.douglasfg.FinanceAssistantBackend.entities.Expense;
-
-import org.springframework.data.jpa.repository.Query;
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.douglasfg.FinanceAssistantBackend.entities.Expense;
 
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
@@ -38,6 +37,11 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
        "WHERE p.id = :personId " +
        "ORDER BY e.expenseDate DESC")
       List<Expense> getExpensesFromPerson(Long personId);
+
+      @Query("SELECT DISTINCT e FROM Expense e " +
+            "JOIN FETCH ExpenseCategory ec ON ec.expense = e " +
+            "JOIN FETCH ec.category")
+      List<Expense> findAllWithCategories();
 
    
 

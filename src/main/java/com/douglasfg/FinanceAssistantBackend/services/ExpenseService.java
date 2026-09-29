@@ -58,7 +58,7 @@ public class ExpenseService {
 
     public String analyzeHistory() {
 
-        List<Expense> expenses = expenseRepository.findAll();
+        List<Expense> expenses = expenseRepository.findAllWithCategories();
 
         return aiAnalyzeHistoryService.analyzeHistoryExpenses(expenses);
         
