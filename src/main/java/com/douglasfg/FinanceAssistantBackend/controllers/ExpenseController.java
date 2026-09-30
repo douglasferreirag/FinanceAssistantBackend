@@ -57,9 +57,9 @@ public class ExpenseController {
     @GetMapping("/sumByMonthAndYear")
     public ResponseEntity<Double> sumByMonthAndYear(
             @RequestParam int month,
-            @RequestParam int year,
-            @RequestParam long idPessoa) {
-        Double result = expenseService.sumByMonthAndYear(month, year, idPessoa);
+            @RequestParam int year
+        ) {
+        Double result = expenseService.sumByMonthAndYear(month, year);
         return ResponseEntity.ok(result);
     }
 

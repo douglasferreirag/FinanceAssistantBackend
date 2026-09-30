@@ -13,35 +13,31 @@ import com.douglasfg.FinanceAssistantBackend.entities.Expense;
 
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
-  /*  @Query("SELECT COALESCE(SUM(e.cost), 0) FROM Expense e WHERE MONTH(e.expenseDate) = :month AND YEAR(e.expenseDate) = :year")
-    Double sumByMonthAndYear(int month, int year); */ 
-
-    @Query("SELECT COALESCE(SUM(e.cost), 0) " +
-       "FROM ExpensePerson ep " +
-       "JOIN ep.expense e " +
-       "JOIN ep.person p " +
-       "WHERE FUNCTION('MONTH', e.expenseDate) = :month " +
-       "AND FUNCTION('YEAR', e.expenseDate) = :year " +
-       "AND p.id = :personId")
-    Double sumByMonthAndYear(int month, int year, Long personId);
+  
+      @Query("SELECT COALESCE(SUM(e.cost), 0) " +
+            "FROM Expense e " +
+            "JOIN e.person p " +
+            "WHERE MONTH(e.expenseDate) = :month " +
+            "AND YEAR(e.expenseDate) = :year")
+      Double sumByMonthAndYear(int month, int year); // SOMATÓRIO GERAL PARA ANÁLISE DE GASTOS SEM iA
 
 
 
-    @Query("SELECT e.category.name, SUM(e.cost) FROM Expense e GROUP BY e.category.name")
-    List<Object[]> getExpensesGroupedByCategory();
 
 
-    @Query("SELECT e FROM ExpensePerson ep " +
-       "JOIN ep.expense e " +
-       "JOIN ep.person p " +
-       "WHERE p.id = :personId " +
-       "ORDER BY e.expenseDate DESC")
-      List<Expense> getExpensesFromPerson(Long personId);
+    @Query("SELECT c.name, SUM(e.cost) " +
+       "FROM Expense e " +
+       "JOIN e.categories c " +
+       "GROUP BY c.name")
+      List<Object[]> getExpensesGroupedByCategory(); // Para gráfico (GraphicExpense)
+
+
+
 
       @Query("SELECT DISTINCT e FROM Expense e " +
-            "JOIN FETCH ExpenseCategory ec ON ec.expense = e " +
-            "JOIN FETCH ec.category")
-      List<Expense> findAllWithCategories();
+            "JOIN FETCH e.categories")
+      List<Expense> findAllWithCategories(); // Para analise junto da ia.
+
 
    
 

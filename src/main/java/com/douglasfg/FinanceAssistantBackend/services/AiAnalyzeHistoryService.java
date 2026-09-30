@@ -14,6 +14,7 @@ import com.douglasfg.FinanceAssistantBackend.config.GeminiConfig;
 import com.douglasfg.FinanceAssistantBackend.dto.request.GeminiRequest;
 import com.douglasfg.FinanceAssistantBackend.dto.response.GeminiResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Expense;
+import com.douglasfg.FinanceAssistantBackend.entities.Category;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,9 +40,31 @@ public class AiAnalyzeHistoryService {
         for (Expense e : expenses) {
             sb.append("- Descrição: ").append(e.getDescription())
               .append(" | Valor: R$ ").append(e.getCost())
-              .append(" | Data: ").append(e.getExpenseDate())
-              .append(" | Categoria: ").append(e.getCategory().getName())
-              .append("\n");
+              .append(" | Data: ").append(e.getExpenseDate());
+
+            // Pessoa associada
+            if (e.getPerson() != null) {
+                sb.append(" | Pessoa: ").append(e.getPerson().getName());
+            }
+
+            // Categorias associadas
+            if (e.getCategories() != null && !e.getCategories().isEmpty()) {
+                sb.append(" | Categorias: ");
+                for (Category c : e.getCategories()) {
+                    sb.append(c.getName()).append(", ");
+                }
+                // remove última vírgula
+                sb.setLength(sb.length() - 2);
+            }
+
+            // Meta associada
+            if (e.getGoal() != null) {
+                sb.append(" | Meta: ").append(e.getGoal().getMonth())
+                  .append("/").append(e.getGoal().getYear())
+                  .append(" (Teto: R$ ").append(e.getGoal().getCeiling()).append(")");
+            }
+
+            sb.append("\n");
         }
 
         String prompt = sb.toString();

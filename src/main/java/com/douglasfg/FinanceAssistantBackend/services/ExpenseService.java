@@ -41,8 +41,8 @@ public class ExpenseService {
         return expenseRepository.findById(id);
     }
 
-    public Double sumByMonthAndYear(int month, int year, long idPerson) {
-        Double total = expenseRepository.sumByMonthAndYear(month, year, idPerson);
+    public Double sumByMonthAndYear(int month, int year) {
+        Double total = expenseRepository.sumByMonthAndYear(month, year);
         return total != null ? total : 0.0;
     }
 
