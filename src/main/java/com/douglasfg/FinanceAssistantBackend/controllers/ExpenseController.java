@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.douglasfg.FinanceAssistantBackend.dto.request.ExpenseRequest;
+import com.douglasfg.FinanceAssistantBackend.dto.response.ExpenseResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Expense;
 import com.douglasfg.FinanceAssistantBackend.services.ExpenseService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -23,18 +26,19 @@ import lombok.RequiredArgsConstructor;
 public class ExpenseController {
 
     private final ExpenseService expenseService;
+    
 
     // Criar despesa → 201 Created ou 400 Bad Request
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody Expense expense) {
+    public ResponseEntity<ExpenseResponse> save(@Valid @RequestBody ExpenseRequest request) {
         try {
-            
-            Expense saved = expenseService.save(expense);
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved); // 201 Created
+            ExpenseResponse response = expenseService.save(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage()); // 400 Bad Request
+            return ResponseEntity.badRequest().build();
         }
     }
+
 
     // Buscar todas → 200 OK ou 204 No Content
     @GetMapping("/findAll")

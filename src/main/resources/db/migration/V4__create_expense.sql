@@ -6,10 +6,14 @@ CREATE TABLE expense (
     expense_date DATE NOT NULL,
     person_id BIGINT NOT NULL,
     goal_id BIGINT,
+    category_id BIGINT NOT NULL,
 
     CONSTRAINT fk_expense_person FOREIGN KEY (person_id)
         REFERENCES person(id) ON DELETE CASCADE,
 
     CONSTRAINT fk_expense_goal FOREIGN KEY (goal_id)
-        REFERENCES goal(id) ON DELETE SET NULL
+        REFERENCES goal(id) ON DELETE SET NULL,
+
+    CONSTRAINT fk_expense_category FOREIGN KEY (category_id)
+        REFERENCES category(id) ON DELETE CASCADE
 );
