@@ -1,0 +1,10 @@
+package com.douglasfg.FinanceAssistantBackend.dto.request;
+
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+
+@Data
+public class CategoryRequest {
+    @NotBlank(message = "Nome da categoria é obrigatório")
+    private String name;
+}

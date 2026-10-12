@@ -14,7 +14,6 @@ import com.douglasfg.FinanceAssistantBackend.config.GeminiConfig;
 import com.douglasfg.FinanceAssistantBackend.dto.request.GeminiRequest;
 import com.douglasfg.FinanceAssistantBackend.dto.response.GeminiResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Expense;
-import com.douglasfg.FinanceAssistantBackend.entities.Category;
 
 import lombok.RequiredArgsConstructor;
 
@@ -47,14 +46,9 @@ public class AiAnalyzeHistoryService {
                 sb.append(" | Pessoa: ").append(e.getPerson().getName());
             }
 
-            // Categorias associadas
-            if (e.getCategories() != null && !e.getCategories().isEmpty()) {
-                sb.append(" | Categorias: ");
-                for (Category c : e.getCategories()) {
-                    sb.append(c.getName()).append(", ");
-                }
-                // remove última vírgula
-                sb.setLength(sb.length() - 2);
+            // Categoria associada (apenas uma)
+            if (e.getCategory() != null) {
+                sb.append(" | Categoria: ").append(e.getCategory().getName());
             }
 
             // Meta associada

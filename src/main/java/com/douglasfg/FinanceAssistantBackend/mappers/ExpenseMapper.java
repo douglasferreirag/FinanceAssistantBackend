@@ -11,11 +11,12 @@ import com.douglasfg.FinanceAssistantBackend.entities.Expense;
 public interface ExpenseMapper {
 
     // Converte DTO de entrada para entidade
+    @Mapping(target = "id", ignore = true)        // id é gerado pelo banco
+    @Mapping(target = "person", ignore = true)    // setado no handler
+    @Mapping(target = "category", ignore = true)  // setado no handler
+    @Mapping(target = "goal", ignore = true)      // setado no handler
     Expense toEntity(ExpenseRequest request);
 
-    // Converte entidade para DTO de saída
-    @Mapping(source = "person.name", target = "personName")
-    @Mapping(source = "goal.name", target = "goalName")
-    @Mapping(source = "category.name", target = "categoryName")
+    // Converte entidade para DTO de saída (apenas dados principais)
     ExpenseResponse toResponse(Expense expense);
 }
