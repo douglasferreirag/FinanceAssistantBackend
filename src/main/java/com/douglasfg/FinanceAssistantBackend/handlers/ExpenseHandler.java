@@ -1,15 +1,14 @@
-package com.douglasfg.FinanceAssistantBackend.handler;
+package com.douglasfg.FinanceAssistantBackend.handlers;
 
 import org.springframework.stereotype.Component;
 
-import com.douglasfg.FinanceAssistantBackend.dto.request.ExpenseRequest;
-import com.douglasfg.FinanceAssistantBackend.dto.response.ExpenseResponse;
+import com.douglasfg.FinanceAssistantBackend.dto.requests.ExpenseRequest;
+import com.douglasfg.FinanceAssistantBackend.dto.responses.ExpenseResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Category;
 import com.douglasfg.FinanceAssistantBackend.entities.Expense;
 import com.douglasfg.FinanceAssistantBackend.entities.Goal;
 import com.douglasfg.FinanceAssistantBackend.entities.Person;
-import com.douglasfg.FinanceAssistantBackend.mapper.ExpenseMapper;
-
+import com.douglasfg.FinanceAssistantBackend.mappers.ExpenseMapper;
 
 import lombok.Data;
 

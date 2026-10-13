@@ -1,10 +1,10 @@
-package com.douglasfg.FinanceAssistantBackend.mapper;
+package com.douglasfg.FinanceAssistantBackend.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.douglasfg.FinanceAssistantBackend.dto.request.ExpenseRequest;
-import com.douglasfg.FinanceAssistantBackend.dto.response.ExpenseResponse;
+import com.douglasfg.FinanceAssistantBackend.dto.requests.ExpenseRequest;
+import com.douglasfg.FinanceAssistantBackend.dto.responses.ExpenseResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Expense;
 
 @Mapper(componentModel = "spring")

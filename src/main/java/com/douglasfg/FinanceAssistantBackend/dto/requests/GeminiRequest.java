@@ -1,4 +1,4 @@
-package com.douglasfg.FinanceAssistantBackend.dto.request;
+package com.douglasfg.FinanceAssistantBackend.dto.requests;
 
 import java.util.List;
 
