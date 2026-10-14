@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.douglasfg.FinanceAssistantBackend.dto.request.ExpenseRequest;
-import com.douglasfg.FinanceAssistantBackend.dto.response.ExpenseResponse;
-import com.douglasfg.FinanceAssistantBackend.entities.Expense;
+import com.douglasfg.FinanceAssistantBackend.dtos.requests.ExpenseRequest;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.ExpenseResponse;
 import com.douglasfg.FinanceAssistantBackend.services.ExpenseService;
 
 import jakarta.validation.Valid;
@@ -42,20 +41,19 @@ public class ExpenseController {
 
     // Buscar todas → 200 OK ou 204 No Content
     @GetMapping("/findAll")
-    public ResponseEntity<List<Expense>> findAll() {
-        List<Expense> expenses = expenseService.findAll();
+    public ResponseEntity<List<ExpenseResponse>> findAll() {
+        List<ExpenseResponse> expenses = expenseService.findAll();
         if (expenses.isEmpty()) {
-            return ResponseEntity.noContent().build(); // 204 No Content
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(expenses); // 200 OK
+        return ResponseEntity.ok(expenses);
     }
 
     // Buscar por ID → 200 OK ou 404 Not Found
     @GetMapping("/{id}")
-    public ResponseEntity<Expense> findById(@PathVariable Long id) {
-        return expenseService.findById(id)
-                .map(ResponseEntity::ok) // 200 OK
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build()); // 404 Not Found
+    public ResponseEntity<ExpenseResponse> findById(@PathVariable Long id) {
+        ExpenseResponse expense = expenseService.findById(id);
+        return ResponseEntity.ok(expense); // 200 OK
     }
 
     @GetMapping("/sumByMonthAndYear")

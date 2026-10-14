@@ -3,8 +3,8 @@ package com.douglasfg.FinanceAssistantBackend.handlers;
 
 import org.springframework.stereotype.Component;
 
-import com.douglasfg.FinanceAssistantBackend.dto.requests.CategoryRequest;
-import com.douglasfg.FinanceAssistantBackend.dto.responses.CategoryResponse;
+import com.douglasfg.FinanceAssistantBackend.dtos.requests.CategoryRequest;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.CategoryResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Category;
 import com.douglasfg.FinanceAssistantBackend.mappers.CategoryMapper;
 

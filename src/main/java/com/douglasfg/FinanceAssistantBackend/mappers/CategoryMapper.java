@@ -3,8 +3,8 @@ package com.douglasfg.FinanceAssistantBackend.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.douglasfg.FinanceAssistantBackend.dto.requests.CategoryRequest;
-import com.douglasfg.FinanceAssistantBackend.dto.responses.CategoryResponse;
+import com.douglasfg.FinanceAssistantBackend.dtos.requests.CategoryRequest;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.CategoryResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Category;
 
 

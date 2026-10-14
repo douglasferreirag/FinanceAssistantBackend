@@ -1,5 +1,5 @@
 // GoalRequest.java
-package com.douglasfg.FinanceAssistantBackend.dto.requests;
+package com.douglasfg.FinanceAssistantBackend.dtos.requests;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

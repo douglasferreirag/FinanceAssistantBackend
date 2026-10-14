@@ -11,8 +11,8 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.douglasfg.FinanceAssistantBackend.config.GeminiConfig;
-import com.douglasfg.FinanceAssistantBackend.dto.request.GeminiRequest;
-import com.douglasfg.FinanceAssistantBackend.dto.response.GeminiResponse;
+import com.douglasfg.FinanceAssistantBackend.dtos.requests.GeminiRequest;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.GeminiResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Expense;
 
 import lombok.RequiredArgsConstructor;

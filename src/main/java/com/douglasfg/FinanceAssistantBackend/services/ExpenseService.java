@@ -4,24 +4,22 @@ package com.douglasfg.FinanceAssistantBackend.services;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.douglasfg.FinanceAssistantBackend.dto.request.ExpenseRequest;
-import com.douglasfg.FinanceAssistantBackend.dto.response.ExpenseResponse;
+import com.douglasfg.FinanceAssistantBackend.dtos.requests.ExpenseRequest;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.ExpenseResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Category;
 import com.douglasfg.FinanceAssistantBackend.entities.Expense;
 import com.douglasfg.FinanceAssistantBackend.entities.Goal;
 import com.douglasfg.FinanceAssistantBackend.entities.Person;
+import com.douglasfg.FinanceAssistantBackend.exceptions.ResourceNotFoundException;
+import com.douglasfg.FinanceAssistantBackend.handlers.ExpenseHandler;
 import com.douglasfg.FinanceAssistantBackend.repositories.CategoryRepository;
 import com.douglasfg.FinanceAssistantBackend.repositories.ExpenseRepository;
 import com.douglasfg.FinanceAssistantBackend.repositories.GoalRepository;
 import com.douglasfg.FinanceAssistantBackend.repositories.PersonRepository;
-import com.douglasfg.FinanceAssistantBackend.exceptions.ResourceNotFoundException;
-import com.douglasfg.FinanceAssistantBackend.handler.ExpenseHandler;
-
 
 import jakarta.transaction.Transactional;
 import lombok.Data;
@@ -68,14 +66,19 @@ public class ExpenseService {
 
 
 
-    // ✅ Listar todos os gastos
-    public List<Expense> findAll() {
-        return expenseRepository.findAll();
+    // ✅ Listar todos os gastos → retorna DTO
+    public List<ExpenseResponse> findAll() {
+        return expenseRepository.findAll()
+                .stream()
+                .map(expenseHandler.getExpenseMapper()::toResponse)
+                .collect(Collectors.toList());
     }
 
-    // ✅ Buscar gasto por ID
-    public Optional<Expense> findById(Long id) {
-        return expenseRepository.findById(id);
+    // ✅ Buscar gasto por ID → retorna DTO
+    public ExpenseResponse findById(Long id) {
+        Expense expense = expenseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found: " + id));
+        return expenseHandler.getExpenseMapper().toResponse(expense);
     }
 
     public Double sumByMonthAndYear(int month, int year) {

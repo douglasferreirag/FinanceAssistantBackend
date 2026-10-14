@@ -1,4 +1,4 @@
-package com.douglasfg.FinanceAssistantBackend.dto.requests;
+package com.douglasfg.FinanceAssistantBackend.dtos.requests;
 
 import java.time.LocalDate;
 

@@ -2,16 +2,17 @@ package com.douglasfg.FinanceAssistantBackend.handlers;
 
 import org.springframework.stereotype.Component;
 
+import com.douglasfg.FinanceAssistantBackend.dtos.requests.GoalRequest;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.GoalResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Goal;
-
-import lombok.RequiredArgsConstructor;
-
 import com.douglasfg.FinanceAssistantBackend.mappers.GoalMapper;
-import com.douglasfg.FinanceAssistantBackend.dto.requests.GoalRequest;
-import com.douglasfg.FinanceAssistantBackend.dto.responses.GoalResponse;
+
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@Data
 public class GoalHandler {
 
     private final GoalMapper goalMapper;

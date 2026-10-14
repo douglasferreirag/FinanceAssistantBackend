@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.douglasfg.FinanceAssistantBackend.dto.requests.CategoryRequest;
-import com.douglasfg.FinanceAssistantBackend.dto.responses.CategoryResponse;
+import com.douglasfg.FinanceAssistantBackend.dtos.requests.CategoryRequest;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.CategoryResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Category;
 import com.douglasfg.FinanceAssistantBackend.exceptions.ResourceAlreadyExistsException;
 import com.douglasfg.FinanceAssistantBackend.exceptions.ResourceNotFoundException;

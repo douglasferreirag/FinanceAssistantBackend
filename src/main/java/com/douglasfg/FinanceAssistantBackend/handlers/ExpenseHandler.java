@@ -2,8 +2,8 @@ package com.douglasfg.FinanceAssistantBackend.handlers;
 
 import org.springframework.stereotype.Component;
 
-import com.douglasfg.FinanceAssistantBackend.dto.requests.ExpenseRequest;
-import com.douglasfg.FinanceAssistantBackend.dto.responses.ExpenseResponse;
+import com.douglasfg.FinanceAssistantBackend.dtos.requests.ExpenseRequest;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.ExpenseResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Category;
 import com.douglasfg.FinanceAssistantBackend.entities.Expense;
 import com.douglasfg.FinanceAssistantBackend.entities.Goal;

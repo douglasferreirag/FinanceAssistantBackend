@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.douglasfg.FinanceAssistantBackend.entities.Category;
+import com.douglasfg.FinanceAssistantBackend.dtos.requests.CategoryRequest;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.CategoryResponse;
 import com.douglasfg.FinanceAssistantBackend.services.CategoryService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,25 +26,28 @@ public class CategoryController {
 
     // Criar categoria → 201 Created
     @PostMapping("/save")
-    public ResponseEntity<Category> save(@RequestBody Category category) {
-        Category saved = categoryService.save(category);
+    public ResponseEntity<CategoryResponse> save(@RequestBody CategoryRequest request) {
+        CategoryResponse saved = categoryService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     // Buscar todas → 200 OK (ou 204 No Content se vazio)
     @GetMapping("/findAll")
-    public ResponseEntity<List<Category>> findAll() {
-        List<Category> categories = categoryService.findAll();
+    public ResponseEntity<List<CategoryResponse>> findAll() {
+        List<CategoryResponse> categories = categoryService.findAll();
         if (categories.isEmpty()) {
             return ResponseEntity.noContent().build(); // 204 No Content
         }
         return ResponseEntity.ok(categories); // 200 OK
     }
 
+
     @GetMapping("/findByName/{name}")
-    public ResponseEntity<Category> findByName(@PathVariable String name) {
-        return ResponseEntity.ok(categoryService.findByName(name));
+    public ResponseEntity<CategoryResponse> findByName(@PathVariable String name) {
+        CategoryResponse category = categoryService.findByName(name);
+        return ResponseEntity.ok(category);
     }
+
 
     @GetMapping("/names")
     public ResponseEntity<List<String>> getAllNames() {
