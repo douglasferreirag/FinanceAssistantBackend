@@ -1,6 +1,5 @@
 package com.douglasfg.FinanceAssistantBackend.services;
 
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,6 @@ public class ExpenseService {
     private final AiAnalyzeHistoryService aiAnalyzeHistoryService;
     private final ExpenseHandler expenseHandler;
 
-   
     @Transactional
     public ExpenseResponse save(ExpenseRequest request) {
         Person person = personRepository.findByName(request.getPersonName())
@@ -55,7 +53,7 @@ public class ExpenseService {
             .cost(request.getCost())
             .expenseDate(expenseDate)
             .person(person)
-            .category(category)   // ✅ agora é 1x1
+            .category(category)
             .goal(goal)
             .build();
 
@@ -63,10 +61,6 @@ public class ExpenseService {
         return expenseHandler.getExpenseMapper().toResponse(saved);
     }
 
-
-
-
-    // ✅ Listar todos os gastos → retorna DTO
     public List<ExpenseResponse> findAll() {
         return expenseRepository.findAll()
                 .stream()
@@ -74,7 +68,6 @@ public class ExpenseService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ Buscar gasto por ID → retorna DTO
     public ExpenseResponse findById(Long id) {
         Expense expense = expenseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Expense not found: " + id));
@@ -86,33 +79,22 @@ public class ExpenseService {
         return total != null ? total : 0.0;
     }
 
-    
     public Map<String, Double> getExpensesGroupedByCategory() {
-    return expenseRepository.getExpensesGroupedByCategory()
-        .stream()
-        .collect(Collectors.toMap(
-            row -> (String) row[0],
-            row -> (Double) row[1]
-        ));
+        return expenseRepository.getExpensesGroupedByCategory()
+            .stream()
+            .collect(Collectors.toMap(
+                row -> (String) row[0],
+                row -> (Double) row[1]
+            ));
     }
 
     public String analyzeHistory() {
-
-        List<Expense> expenses = expenseRepository.findAllWithCategories();
-
+        List<Expense> expenses = expenseRepository.findAllWithCategory();
         return aiAnalyzeHistoryService.analyzeHistoryExpenses(expenses);
-        
     }
 
-    
     public String analyzeHistoryByPerson(Long personId) {
-        // Busca todas as despesas da pessoa com suas categorias
-        List<Expense> expenses = expenseRepository.findAllByPersonWithCategories(personId);
-
-        // Chama o serviço de análise (pode ser IA ou regra de negócio)
+        List<Expense> expenses = expenseRepository.findAllByPersonWithCategory(personId);
         return aiAnalyzeHistoryService.analyzeHistoryExpenses(expenses);
-
     }
-
-
 }
