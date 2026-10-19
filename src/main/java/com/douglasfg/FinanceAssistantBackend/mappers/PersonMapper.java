@@ -12,7 +12,7 @@ public interface PersonMapper {
 
     @Mapping(target = "id", ignore = true)       // id gerado pelo banco
     @Mapping(target = "expenses", ignore = true) // não mapeamos lista de despesas
-    @Mapping(target = "name", ignore = true) // name gerado pelo banco
+   
     Person toEntity(PersonRequest request);
 
     
