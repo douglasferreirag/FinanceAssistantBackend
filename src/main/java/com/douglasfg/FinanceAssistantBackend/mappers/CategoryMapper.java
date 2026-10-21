@@ -12,7 +12,6 @@ import com.douglasfg.FinanceAssistantBackend.entities.Category;
 public interface CategoryMapper {
 
     @Mapping(target = "id", ignore = true) // id gerado pelo banco
-    @Mapping(target = "name", ignore = true) // id gerado pelo banco
     Category toEntity(CategoryRequest request);
 
     CategoryResponse toResponse(Category category);
