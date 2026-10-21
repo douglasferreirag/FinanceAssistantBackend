@@ -12,10 +12,10 @@ public interface GoalMapper {
 
     // Request → Entity
     @Mapping(target = "id", ignore = true) // id gerado pelo banco
-    @Mapping(target = "month", ignore = true) // month gerado pelo banco
-    @Mapping(target = "year", ignore = true) // year gerado pelo banco
-    @Mapping(target = "ceiling", ignore = true) // ceiling gerado pelo banco
-     @Mapping(target = "expenses", ignore = true) // id gerado pelo banco
+    @Mapping(target = "month", ignore = false) // month gerado pelo banco
+    @Mapping(target = "year", ignore = false) // year gerado pelo banco
+    @Mapping(target = "ceiling", ignore = false) // ceiling gerado pelo banco
+    @Mapping(target = "expenses", ignore = true) // id gerado pelo banco
     
     Goal toEntity(GoalRequest request);
 
