@@ -12,4 +12,7 @@ public class ExpenseResponse {
     private String description;
     private Double cost;
     private LocalDate expenseDate;
+    private String personId;
+    private String categoryId;
+    private Long goalId;   
 }
