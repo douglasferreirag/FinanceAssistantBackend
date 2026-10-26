@@ -2,6 +2,8 @@ package com.douglasfg.FinanceAssistantBackend.dtos.responses;
 
 import java.time.LocalDate;
 
+import com.douglasfg.FinanceAssistantBackend.entities.Goal;
+
 import lombok.Data;
 
 
@@ -14,5 +16,6 @@ public class ExpenseResponse {
     private LocalDate expenseDate;
     private String personId;
     private String categoryId;
-    private Long goalId;   
+    private Goal goal;
+
 }

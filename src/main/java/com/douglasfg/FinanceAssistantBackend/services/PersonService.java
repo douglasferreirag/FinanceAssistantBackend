@@ -41,9 +41,6 @@ public class PersonService {
 
     // ✅ Listar apenas os nomes
     public List<String> getAllNames() {
-        return personRepository.findAll()
-                               .stream()
-                               .map(Person::getName)
-                               .toList();
+        return  personRepository.findAllNames();
     }
 }

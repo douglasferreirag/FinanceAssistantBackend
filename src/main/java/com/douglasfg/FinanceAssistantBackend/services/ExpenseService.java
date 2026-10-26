@@ -38,28 +38,38 @@ public class ExpenseService {
 
     @Transactional
     public ExpenseResponse save(ExpenseRequest request) {
+        // 🔹 Busca pessoa
         Person person = personRepository.findByName(request.getPersonName())
-                .orElseThrow(() -> new ResourceNotFoundException("Person not found: " + request.getPersonName()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Person not found: " + request.getPersonName()));
 
+        // 🔹 Busca categoria
         Category category = categoryRepository.findByName(request.getCategoryName())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + request.getCategoryName()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Category not found: " + request.getCategoryName()));
 
+        // 🔹 Normaliza data e associa meta automaticamente
         LocalDate expenseDate = request.getExpenseDate();
-        Goal goal = goalRepository.findByMonthAndYear(expenseDate.getMonthValue(), expenseDate.getYear())
-                .orElse(null);
+        Goal goal = goalRepository.findByMonthAndYear(
+                expenseDate.getMonthValue(),
+                expenseDate.getYear()
+        ).orElse(null);
 
+        // 🔹 Cria entidade de gasto
         Expense expense = Expense.builder()
-            .description(request.getDescription())
-            .cost(request.getCost())
-            .expenseDate(expenseDate)
-            .person(person)
-            .category(category)
-            .goal(goal)
-            .build();
+                .description(request.getDescription().trim())
+                .cost(request.getCost())
+                .expenseDate(expenseDate)
+                .person(person)
+                .category(category)
+                .goal(goal)
+                .build();
 
+        // 🔹 Persiste e retorna response
         Expense saved = expenseRepository.save(expense);
         return expenseHandler.getExpenseMapper().toResponse(saved);
     }
+
 
     public List<ExpenseResponse> findAll() {
         return expenseRepository.findAll()
