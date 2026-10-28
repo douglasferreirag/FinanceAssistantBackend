@@ -33,7 +33,7 @@ public class GoalService {
 
     @Transactional
     public GoalResponse save(GoalRequest request) {
-        Optional<Goal> existing = goalRepository.findByMonthAndYear(request.getMonth(), request.getYear());
+        Optional<Long> existing = goalRepository.findByMonthAndYear(request.getMonth(), request.getYear());
         if (existing.isPresent()) {
             throw new ResourceAlreadyExistsException(
                 "Já existe meta para " + request.getMonth() + "/" + request.getYear()
@@ -61,11 +61,13 @@ public class GoalService {
 
 
     public GoalResponse findByMonthAndYear(int month, int year) {
-        Goal goal = goalRepository.findByMonthAndYear(month, year)
+        Long goalId = goalRepository.findByMonthAndYear(month, year)
                 .orElseThrow(() -> new ResourceNotFoundException(
                     "Meta não encontrada para " + month + "/" + year
                 ));
-        return goalHandler.prepareResponse(goal);
+        return goalHandler.prepareResponse(goalRepository.findById(goalId).orElseThrow(() -> new ResourceNotFoundException(
+            "Meta não encontrada para " + month + "/" + year
+        )));
     }
 
 

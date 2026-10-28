@@ -42,10 +42,10 @@ public class PersonController {
         return ResponseEntity.ok(people);
     }
 
-    // Buscar por nome
-    @GetMapping("/findByName/{name}")
-    public ResponseEntity<PersonResponse> findByName(@PathVariable String name) {
-        return ResponseEntity.ok(personService.findByName(name));
+    // Buscar id por nome
+    @GetMapping("/findIdByName/{name}")
+    public ResponseEntity<PersonResponse> findIdByName(@PathVariable String name) {
+        return ResponseEntity.ok(personService.findIdByName(name));
     }
 
     // Retornar apenas os nomes

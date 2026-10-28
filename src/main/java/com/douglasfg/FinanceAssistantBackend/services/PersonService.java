@@ -33,10 +33,9 @@ public class PersonService {
     }
 
     // ✅ Buscar pessoa por nome
-    public PersonResponse findByName(String name) {
-    Person person = personRepository.findByName(name)
-                                        .orElseThrow(() -> new RuntimeException("Not found"));
-        return personHandler.prepareResponse(person);
+    public PersonResponse findIdByName(String name) {
+        Long personId = personRepository.findIdByName(name).orElseThrow(() -> new RuntimeException("Not found"));
+        return personHandler.prepareResponse(personRepository.findById(personId).orElseThrow(() -> new RuntimeException("Not found")));
     }
 
     // ✅ Listar apenas os nomes

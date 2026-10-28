@@ -42,9 +42,9 @@ public class CategoryController {
     }
 
 
-    @GetMapping("/findByName/{name}")
-    public ResponseEntity<CategoryResponse> findByName(@PathVariable String name) {
-        CategoryResponse category = categoryService.findByName(name);
+    @GetMapping("/findIdByName/{name}")
+    public ResponseEntity<CategoryResponse> findIdByName(@PathVariable String name) {
+        CategoryResponse category = categoryService.findIdByName(name);
         return ResponseEntity.ok(category);
     }
 

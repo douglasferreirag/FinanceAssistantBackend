@@ -25,7 +25,7 @@ public class CategoryService {
     @Transactional
     public CategoryResponse save(CategoryRequest request) {
         // Verifica se já existe categoria com esse nome
-        categoryRepository.findByName(request.getName())
+        categoryRepository.findIdByName(request.getName())
                 .ifPresent(c -> {
                     throw new ResourceAlreadyExistsException("Categoria já existe: " + request.getName());
                 });
@@ -47,10 +47,10 @@ public class CategoryService {
                 .toList();
     }
 
-    public CategoryResponse findByName(String name) {
-        Category category = categoryRepository.findByName(name)
+    public CategoryResponse findIdByName(String name) {
+        long categoryId = categoryRepository.findIdByName(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + name));
-        return categoryHandler.prepareResponse(category);
+        return categoryHandler.prepareResponse(categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada: " + name)));
     }
 
     public List<String> getAllNames() {

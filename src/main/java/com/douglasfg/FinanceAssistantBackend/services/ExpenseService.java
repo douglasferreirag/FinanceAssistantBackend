@@ -39,20 +39,20 @@ public class ExpenseService {
     @Transactional
     public ExpenseResponse save(ExpenseRequest request) {
         // 🔹 Busca pessoa
-        Person person = personRepository.findByName(request.getPersonName())
+        long personId = personRepository.findIdByName(request.getPersonName())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Person not found: " + request.getPersonName()));
 
         // 🔹 Busca categoria
-        Category category = categoryRepository.findByName(request.getCategoryName())
+        long categoryId = categoryRepository.findIdByName(request.getCategoryName())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Category not found: " + request.getCategoryName()));
 
         // 🔹 Normaliza data e associa meta automaticamente
         LocalDate expenseDate = request.getExpenseDate();
-        Goal goal = goalRepository.findByMonthAndYear(
-                expenseDate.getMonthValue(),
-                expenseDate.getYear()
+        Long goalId = goalRepository.findByMonthAndYear(
+            request.getExpenseDate().getMonthValue(),
+            request.getExpenseDate().getYear()
         ).orElse(null);
 
         // 🔹 Cria entidade de gasto
@@ -60,9 +60,9 @@ public class ExpenseService {
                 .description(request.getDescription().trim())
                 .cost(request.getCost())
                 .expenseDate(expenseDate)
-                .person(person)
-                .category(category)
-                .goal(goal)
+                .person(Person.builder().id(personId).build())
+                .category(Category.builder().id(categoryId).build())
+                .goal(goalId != null ? Goal.builder().id(goalId).build() : null)
                 .build();
 
         // 🔹 Persiste e retorna response

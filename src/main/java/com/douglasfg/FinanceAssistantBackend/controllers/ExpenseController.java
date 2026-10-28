@@ -31,6 +31,7 @@ public class ExpenseController {
     @PostMapping("/save")
     public ResponseEntity<ExpenseResponse> save(@Valid @RequestBody ExpenseRequest request) {
         try {
+            System.out.println(request.getPersonName());
             ExpenseResponse response = expenseService.save(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalArgumentException e) {
