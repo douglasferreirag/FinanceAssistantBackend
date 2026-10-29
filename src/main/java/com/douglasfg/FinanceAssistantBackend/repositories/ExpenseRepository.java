@@ -22,9 +22,9 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     @Query("SELECT e.category.name, SUM(e.cost) FROM Expense e GROUP BY e.category.name")
     List<Object[]> getExpensesGroupedByCategory();
 
-    // Busca todas as despesas já com categoria carregada
-    @Query("SELECT DISTINCT e FROM Expense e JOIN FETCH e.category")
-    List<Expense> findAllWithCategory();
+       // Busca todas as despesas já com categoria e pessoa carregadas
+       @Query("SELECT DISTINCT e FROM Expense e JOIN FETCH e.category JOIN FETCH e.person")
+       List<Expense> findAllWithCategoryAndPerson();
 
     // Busca todas as despesas de uma pessoa com categoria carregada
     @Query("SELECT DISTINCT e FROM Expense e " +

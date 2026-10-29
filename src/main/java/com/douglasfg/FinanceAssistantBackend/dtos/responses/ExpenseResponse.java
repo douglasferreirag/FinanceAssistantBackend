@@ -11,8 +11,10 @@ public class ExpenseResponse {
     private String description;
     private Double cost;
     private LocalDate expenseDate;
-    private long personId;
-    private long categoryId;
+    //private long personId;
+    //private long categoryId;
+    private String personName;
+    private String categoryName;
     private long goalId;
 
 }

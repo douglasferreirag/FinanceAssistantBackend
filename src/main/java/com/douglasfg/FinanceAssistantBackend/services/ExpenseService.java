@@ -71,8 +71,8 @@ public class ExpenseService {
     }
 
 
-    public List<ExpenseResponse> findAll() {
-        return expenseRepository.findAll()
+    public List<ExpenseResponse> findAllWithCategoryAndPerson() {
+        return expenseRepository.findAllWithCategoryAndPerson()
                 .stream()
                 .map(expenseHandler.getExpenseMapper()::toResponse)
                 .collect(Collectors.toList());
@@ -99,7 +99,7 @@ public class ExpenseService {
     }
 
     public String analyzeHistory() {
-        List<Expense> expenses = expenseRepository.findAllWithCategory();
+        List<Expense> expenses = expenseRepository.findAllWithCategoryAndPerson();
         return aiAnalyzeHistoryService.analyzeHistoryExpenses(expenses);
     }
 

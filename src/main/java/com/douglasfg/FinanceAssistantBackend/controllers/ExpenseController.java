@@ -41,9 +41,9 @@ public class ExpenseController {
 
 
     // Buscar todas → 200 OK ou 204 No Content
-    @GetMapping("/findAll")
-    public ResponseEntity<List<ExpenseResponse>> findAll() {
-        List<ExpenseResponse> expenses = expenseService.findAll();
+    @GetMapping("/findAllWithCategoryAndPerson")
+    public ResponseEntity<List<ExpenseResponse>> findAllWithCategoryAndPerson() {
+        List<ExpenseResponse> expenses = expenseService.findAllWithCategoryAndPerson();
         if (expenses.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
