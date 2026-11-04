@@ -1,5 +1,6 @@
 package com.douglasfg.FinanceAssistantBackend.controllers;
 
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.douglasfg.FinanceAssistantBackend.dtos.requests.ExpenseRequest;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.DashboardSummaryResponse;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.DashboardExpenseByCategory;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.DashboardExpenseByMonthAndYear;
 import com.douglasfg.FinanceAssistantBackend.dtos.responses.ExpenseResponse;
 import com.douglasfg.FinanceAssistantBackend.services.ExpenseService;
 
@@ -41,7 +45,7 @@ public class ExpenseController {
 
 
     // Buscar todas → 200 OK ou 204 No Content
-    @GetMapping("/findAllWithCategoryAndPerson")
+    @GetMapping("/findAllWithCategoryAndPerson") // Expenselist
     public ResponseEntity<List<ExpenseResponse>> findAllWithCategoryAndPerson() {
         List<ExpenseResponse> expenses = expenseService.findAllWithCategoryAndPerson();
         if (expenses.isEmpty()) {
@@ -74,6 +78,27 @@ public class ExpenseController {
     @PostMapping("/person/{personId}")
     public String analyzeHistoryByPerson(@PathVariable Long personId) {
         return expenseService.analyzeHistoryByPerson(personId);
+    }
+
+    // Para o dashboard
+
+    @GetMapping("/dashboardSummary")
+    public DashboardSummaryResponse getDashboardSummary() {
+        return expenseService.getDashboardSummary();
+    }
+
+    @GetMapping("/dashboardExpenseCategory")
+    public ResponseEntity<List<DashboardExpenseByCategory>>
+            getExpensesByCategory() {
+
+        return ResponseEntity.ok(
+                expenseService.getExpensesByCategories()
+        );
+    }
+
+    @GetMapping("/dashboardExpensesByMonthAndYear")
+    public ResponseEntity<List<DashboardExpenseByMonthAndYear>> getExpensesByMonthAndYear() {
+        return ResponseEntity.ok(expenseService.getExpensesByMonthAndYear());
     }
 
 }

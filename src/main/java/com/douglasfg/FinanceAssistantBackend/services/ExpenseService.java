@@ -1,5 +1,6 @@
 package com.douglasfg.FinanceAssistantBackend.services;
 
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.douglasfg.FinanceAssistantBackend.dtos.requests.ExpenseRequest;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.DashboardExpenseByCategory;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.DashboardExpenseByMonthAndYear;
+import com.douglasfg.FinanceAssistantBackend.dtos.responses.DashboardSummaryResponse;
 import com.douglasfg.FinanceAssistantBackend.dtos.responses.ExpenseResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Category;
 import com.douglasfg.FinanceAssistantBackend.entities.Expense;
@@ -71,7 +75,7 @@ public class ExpenseService {
     }
 
 
-    public List<ExpenseResponse> findAllWithCategoryAndPerson() {
+    public List<ExpenseResponse> findAllWithCategoryAndPerson() { //Expenselist
         return expenseRepository.findAllWithCategoryAndPerson()
                 .stream()
                 .map(expenseHandler.getExpenseMapper()::toResponse)
@@ -89,7 +93,7 @@ public class ExpenseService {
         return total != null ? total : 0.0;
     }
 
-    public Map<String, Double> getExpensesGroupedByCategory() {
+    public Map<String, Double> getExpensesGroupedByCategory() { // para os gráficos
         return expenseRepository.getExpensesGroupedByCategory()
             .stream()
             .collect(Collectors.toMap(
@@ -107,4 +111,53 @@ public class ExpenseService {
         List<Expense> expenses = expenseRepository.findAllByPersonWithCategory(personId);
         return aiAnalyzeHistoryService.analyzeHistoryExpenses(expenses);
     }
+
+
+    // Para o dashboard
+
+    public DashboardSummaryResponse getDashboardSummary() {
+
+        List<Expense> expenses = expenseRepository.findAll();
+
+        Double totalExpenses = expenses.stream()
+            .map(Expense::getCost)
+            .reduce(0.0, Double::sum);
+
+        Double highestExpense = expenses.stream()
+                .map(Expense::getCost)
+                .max(Double::compareTo)
+                .orElse(0.0);
+
+        Double averageExpense = expenses.isEmpty()
+                ? 0.0
+                : totalExpenses / expenses.size();
+
+        Long totalRecords = (long) expenses.size();
+
+        return new DashboardSummaryResponse(
+                totalExpenses,
+                highestExpense,
+                averageExpense,
+                totalRecords
+        );
+    }
+
+    @Transactional
+    public List<DashboardExpenseByCategory>
+            getExpensesByCategories() {
+
+        return expenseRepository
+                .findExpensesByCategories();
+    }
+
+    @Transactional
+    public List<DashboardExpenseByMonthAndYear>
+            getExpensesByMonthAndYear() {
+
+        return expenseRepository
+                .findExpensesByMonthAndYear();
+    }
+
+
+
 }
