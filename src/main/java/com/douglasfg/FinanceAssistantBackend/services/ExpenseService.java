@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.douglasfg.FinanceAssistantBackend.dtos.ai.ExpenseAnalyzeData;
 import com.douglasfg.FinanceAssistantBackend.dtos.requests.ExpenseRequest;
+import com.douglasfg.FinanceAssistantBackend.dtos.ai.GoalAnalyzeData;
 import com.douglasfg.FinanceAssistantBackend.dtos.responses.DashboardExpenseByCategory;
 import com.douglasfg.FinanceAssistantBackend.dtos.responses.DashboardExpenseByMonthAndYear;
 import com.douglasfg.FinanceAssistantBackend.dtos.responses.DashboardSummaryResponse;
@@ -18,7 +20,9 @@ import com.douglasfg.FinanceAssistantBackend.entities.Expense;
 import com.douglasfg.FinanceAssistantBackend.entities.Goal;
 import com.douglasfg.FinanceAssistantBackend.entities.Person;
 import com.douglasfg.FinanceAssistantBackend.exceptions.ResourceNotFoundException;
+import com.douglasfg.FinanceAssistantBackend.handlers.ExpenseAnalyzeDataHandler;
 import com.douglasfg.FinanceAssistantBackend.handlers.ExpenseHandler;
+import com.douglasfg.FinanceAssistantBackend.handlers.GoalAnalyzeDataHandler;
 import com.douglasfg.FinanceAssistantBackend.repositories.CategoryRepository;
 import com.douglasfg.FinanceAssistantBackend.repositories.ExpenseRepository;
 import com.douglasfg.FinanceAssistantBackend.repositories.GoalRepository;
@@ -39,6 +43,8 @@ public class ExpenseService {
     private final CategoryRepository categoryRepository;
     private final AiAnalyzeHistoryService aiAnalyzeHistoryService;
     private final ExpenseHandler expenseHandler;
+    private final GoalAnalyzeDataHandler goalAnalyzeDataHandler;
+    private final ExpenseAnalyzeDataHandler expenseAnalyzeDataHandler;
 
     @Transactional
     public ExpenseResponse save(ExpenseRequest request) {
@@ -88,9 +94,12 @@ public class ExpenseService {
         return expenseHandler.getExpenseMapper().toResponse(expense);
     }
 
-    public Double sumByMonthAndYear(int month, int year) {
-        Double total = expenseRepository.sumByMonthAndYear(month, year);
-        return total != null ? total : 0.0;
+    public Double getTotalExpensesByMonth(
+            Integer month,
+            Integer year) {
+
+        return expenseRepository
+                .findTotalExpensesByMonth(month, year);
     }
 
     public Map<String, Double> getExpensesGroupedByCategory() { // para os gráficos
@@ -102,14 +111,36 @@ public class ExpenseService {
             ));
     }
 
+    /*
+
     public String analyzeHistory() {
         List<Expense> expenses = expenseRepository.findAllWithCategoryAndPerson();
         return aiAnalyzeHistoryService.analyzeHistoryExpenses(expenses);
     }
 
-    public String analyzeHistoryByPerson(Long personId) {
-        List<Expense> expenses = expenseRepository.findAllByPersonWithCategory(personId);
-        return aiAnalyzeHistoryService.analyzeHistoryExpenses(expenses);
+    */
+
+    public String analyzeHistory() {
+
+        List<ExpenseAnalyzeData> expenses =
+                expenseRepository
+                        .findAllWithCategoryAndPerson()
+                        .stream()
+                        .map(expenseAnalyzeDataHandler::prepareData)
+                        .toList();
+
+        List<GoalAnalyzeData> goals =
+                goalRepository
+                        .findAll()
+                        .stream()
+                        .map(goalAnalyzeDataHandler::prepareData)
+                        .toList();
+
+        return aiAnalyzeHistoryService
+                .analyzeHistoryExpenses(
+                        expenses,
+                        goals
+                );
     }
 
 

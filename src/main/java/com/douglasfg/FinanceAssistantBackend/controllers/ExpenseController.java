@@ -61,13 +61,14 @@ public class ExpenseController {
         return ResponseEntity.ok(expense); // 200 OK
     }
 
-    @GetMapping("/sumByMonthAndYear")
-    public ResponseEntity<Double> sumByMonthAndYear(
-            @RequestParam int month,
-            @RequestParam int year
-        ) {
-        Double result = expenseService.sumByMonthAndYear(month, year);
-        return ResponseEntity.ok(result);
+    @GetMapping("/TotalExpensesByMonth")
+    public ResponseEntity<Double> getTotalExpensesByMonth(
+            @RequestParam Integer month,
+            @RequestParam Integer year) {
+
+        return ResponseEntity.ok(
+                expenseService.getTotalExpensesByMonth(month, year)
+        );
     }
 
     @PostMapping("/analyzeHistory")
@@ -75,10 +76,6 @@ public class ExpenseController {
         return expenseService.analyzeHistory();
     }
 
-    @PostMapping("/person/{personId}")
-    public String analyzeHistoryByPerson(@PathVariable Long personId) {
-        return expenseService.analyzeHistoryByPerson(personId);
-    }
 
     // Para o dashboard
 

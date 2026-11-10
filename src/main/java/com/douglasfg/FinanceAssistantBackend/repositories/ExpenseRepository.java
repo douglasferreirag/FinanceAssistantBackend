@@ -13,13 +13,15 @@ import com.douglasfg.FinanceAssistantBackend.entities.Expense;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
   
-    // Somatório geral por mês/ano = analise de gastos sem ia
-    @Query("SELECT COALESCE(SUM(e.cost), 0) " +
-           "FROM Expense e " +
-           "JOIN e.person p " +
-           "WHERE MONTH(e.expenseDate) = :month " +
-           "AND YEAR(e.expenseDate) = :year")
-    Double sumByMonthAndYear(@Param("month") int month, @Param("year") int year);
+    @Query("""
+       SELECT COALESCE(SUM(e.cost), 0)
+       FROM Expense e
+       WHERE MONTH(e.expenseDate) = :month
+       AND YEAR(e.expenseDate) = :year
+       """)
+    Double findTotalExpensesByMonth( // para analise selecionada
+            @Param("month") Integer month,
+            @Param("year") Integer year);
 
     // Agrupamento por categoria (para gráficos)
     @Query("SELECT e.category.name, SUM(e.cost) FROM Expense e GROUP BY e.category.name")
@@ -27,7 +29,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
        // Busca todas as despesas já com categoria e pessoa carregadas = Expenselist
        @Query("SELECT DISTINCT e FROM Expense e JOIN FETCH e.category JOIN FETCH e.person")
-       List<Expense> findAllWithCategoryAndPerson();
+       List<Expense> findAllWithCategoryAndPerson(); // Parece que também está sendo uusando no analysehistory
 
     // Busca todas as despesas de uma pessoa com categoria carregada
     @Query("SELECT DISTINCT e FROM Expense e " +
