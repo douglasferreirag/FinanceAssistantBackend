@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import com.douglasfg.FinanceAssistantBackend.dtos.requests.ExpenseRequest;
@@ -45,9 +45,9 @@ public class ExpenseController {
 
 
     // Buscar todas → 200 OK ou 204 No Content
-    @GetMapping("/findAllWithCategoryAndPerson") // Expenselist
-    public ResponseEntity<List<ExpenseResponse>> findAllWithCategoryAndPerson() {
-        List<ExpenseResponse> expenses = expenseService.findAllWithCategoryAndPerson();
+    @GetMapping("/listAll") // Expenselist
+    public ResponseEntity<List<ExpenseResponse>> listAll() {
+        List<ExpenseResponse> expenses = expenseService.listAll();
         if (expenses.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -61,19 +61,18 @@ public class ExpenseController {
         return ResponseEntity.ok(expense); // 200 OK
     }
 
-    @GetMapping("/TotalExpensesByMonth")
-    public ResponseEntity<Double> getTotalExpensesByMonth(
-            @RequestParam Integer month,
-            @RequestParam Integer year) {
-
-        return ResponseEntity.ok(
-                expenseService.getTotalExpensesByMonth(month, year)
-        );
-    }
+    // Para análise de dados
 
     @PostMapping("/analyzeHistory")
     public String analyzeHistory() {
         return expenseService.analyzeHistory();
+    }
+
+    @PostMapping("/analyzeExpensesByPerson/{personName}")
+    public String analyzeHistoryByPerson(
+            @PathVariable String personName) {
+
+        return expenseService.analyzeHistoryByPerson(personName);
     }
 
 

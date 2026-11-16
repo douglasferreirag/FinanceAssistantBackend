@@ -6,7 +6,6 @@ import com.douglasfg.FinanceAssistantBackend.dtos.requests.ExpenseRequest;
 import com.douglasfg.FinanceAssistantBackend.dtos.responses.ExpenseResponse;
 import com.douglasfg.FinanceAssistantBackend.entities.Category;
 import com.douglasfg.FinanceAssistantBackend.entities.Expense;
-import com.douglasfg.FinanceAssistantBackend.entities.Goal;
 import com.douglasfg.FinanceAssistantBackend.entities.Person;
 import com.douglasfg.FinanceAssistantBackend.mappers.ExpenseMapper;
 
@@ -21,12 +20,11 @@ public class ExpenseHandler {
 
     public Expense prepareExpense(ExpenseRequest request, 
                                 Person person, 
-                                Category category, 
-                                Goal goal) {
+                                Category category 
+                                ) {
         Expense expense = expenseMapper.toEntity(request);
         expense.setPerson(person);
         expense.setCategory(category);
-        expense.setGoal(goal);
         return expense;
     }
 

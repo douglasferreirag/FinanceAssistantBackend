@@ -13,15 +13,23 @@ import com.douglasfg.FinanceAssistantBackend.entities.Expense;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
   
+    // Para análise de dados
+
+
+    // Com ia
+
+
     @Query("""
-       SELECT COALESCE(SUM(e.cost), 0)
-       FROM Expense e
-       WHERE MONTH(e.expenseDate) = :month
-       AND YEAR(e.expenseDate) = :year
-       """)
-    Double findTotalExpensesByMonth( // para analise selecionada
-            @Param("month") Integer month,
-            @Param("year") Integer year);
+    SELECT e
+    FROM Expense e
+    JOIN FETCH e.category
+    JOIN FETCH e.person p
+    WHERE LOWER(p.name) = LOWER(:personName)
+    """)
+    List<Expense> findAllByPersonName(
+            @Param("personName") String personName);
+
+
 
     // Agrupamento por categoria (para gráficos)
     @Query("SELECT e.category.name, SUM(e.cost) FROM Expense e GROUP BY e.category.name")

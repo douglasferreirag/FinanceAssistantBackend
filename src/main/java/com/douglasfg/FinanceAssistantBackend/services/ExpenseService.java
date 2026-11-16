@@ -3,14 +3,13 @@ package com.douglasfg.FinanceAssistantBackend.services;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 
 import org.springframework.stereotype.Service;
 
 import com.douglasfg.FinanceAssistantBackend.dtos.ai.ExpenseAnalyzeData;
-import com.douglasfg.FinanceAssistantBackend.dtos.requests.ExpenseRequest;
 import com.douglasfg.FinanceAssistantBackend.dtos.ai.GoalAnalyzeData;
+import com.douglasfg.FinanceAssistantBackend.dtos.requests.ExpenseRequest;
 import com.douglasfg.FinanceAssistantBackend.dtos.responses.DashboardExpenseByCategory;
 import com.douglasfg.FinanceAssistantBackend.dtos.responses.DashboardExpenseByMonthAndYear;
 import com.douglasfg.FinanceAssistantBackend.dtos.responses.DashboardSummaryResponse;
@@ -46,148 +45,161 @@ public class ExpenseService {
     private final GoalAnalyzeDataHandler goalAnalyzeDataHandler;
     private final ExpenseAnalyzeDataHandler expenseAnalyzeDataHandler;
 
-    @Transactional
-    public ExpenseResponse save(ExpenseRequest request) {
-        // 🔹 Busca pessoa
-        long personId = personRepository.findIdByName(request.getPersonName())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found: " + request.getPersonName()));
+        // Salvar os dados no banco
 
-        // 🔹 Busca categoria
-        long categoryId = categoryRepository.findIdByName(request.getCategoryName())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Category not found: " + request.getCategoryName()));
+        @Transactional
+        public ExpenseResponse save(ExpenseRequest request) {
+                // 🔹 Busca pessoa
+                long personId = personRepository.findIdByName(request.getPersonName())
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Person not found: " + request.getPersonName()));
 
-        // 🔹 Normaliza data e associa meta automaticamente
-        LocalDate expenseDate = request.getExpenseDate();
-        Long goalId = goalRepository.findByMonthAndYear(
-            request.getExpenseDate().getMonthValue(),
-            request.getExpenseDate().getYear()
-        ).orElse(null);
+                // 🔹 Busca categoria
+                long categoryId = categoryRepository.findIdByName(request.getCategoryName())
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Category not found: " + request.getCategoryName()));
 
-        // 🔹 Cria entidade de gasto
-        Expense expense = Expense.builder()
-                .description(request.getDescription().trim())
-                .cost(request.getCost())
-                .expenseDate(expenseDate)
-                .person(Person.builder().id(personId).build())
-                .category(Category.builder().id(categoryId).build())
-                .goal(goalId != null ? Goal.builder().id(goalId).build() : null)
-                .build();
+                // 🔹 Normaliza data e associa meta automaticamente
+                LocalDate expenseDate = request.getExpenseDate();
+                Long goalId = goalRepository.findByMonthAndYear(
+                request.getExpenseDate().getMonthValue(),
+                request.getExpenseDate().getYear()
+                ).orElse(null);
 
-        // 🔹 Persiste e retorna response
-        Expense saved = expenseRepository.save(expense);
-        return expenseHandler.getExpenseMapper().toResponse(saved);
-    }
+                // 🔹 Cria entidade de gasto
+                Expense expense = Expense.builder()
+                        .description(request.getDescription().trim())
+                        .cost(request.getCost())
+                        .expenseDate(expenseDate)
+                        .person(Person.builder().id(personId).build())
+                        .category(Category.builder().id(categoryId).build())
+                        .goal(goalId != null ? Goal.builder().id(goalId).build() : null)
+                        .build();
 
+                // 🔹 Persiste e retorna response
+                Expense saved = expenseRepository.save(expense);
+                return expenseHandler.getExpenseMapper().toResponse(saved);
+        }
 
-    public List<ExpenseResponse> findAllWithCategoryAndPerson() { //Expenselist
-        return expenseRepository.findAllWithCategoryAndPerson()
-                .stream()
-                .map(expenseHandler.getExpenseMapper()::toResponse)
-                .collect(Collectors.toList());
-    }
+        // Listar os dados  (Expenselist)
 
-    public ExpenseResponse findById(Long id) {
-        Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Expense not found: " + id));
-        return expenseHandler.getExpenseMapper().toResponse(expense);
-    }
+        public List<ExpenseResponse> listAll() {
 
-    public Double getTotalExpensesByMonth(
-            Integer month,
-            Integer year) {
-
-        return expenseRepository
-                .findTotalExpensesByMonth(month, year);
-    }
-
-    public Map<String, Double> getExpensesGroupedByCategory() { // para os gráficos
-        return expenseRepository.getExpensesGroupedByCategory()
-            .stream()
-            .collect(Collectors.toMap(
-                row -> (String) row[0],
-                row -> (Double) row[1]
-            ));
-    }
-
-    /*
-
-    public String analyzeHistory() {
-        List<Expense> expenses = expenseRepository.findAllWithCategoryAndPerson();
-        return aiAnalyzeHistoryService.analyzeHistoryExpenses(expenses);
-    }
-
-    */
-
-    public String analyzeHistory() {
-
-        List<ExpenseAnalyzeData> expenses =
-                expenseRepository
+                return expenseRepository
                         .findAllWithCategoryAndPerson()
                         .stream()
-                        .map(expenseAnalyzeDataHandler::prepareData)
+                        .map(expenseHandler::prepareResponse)
                         .toList();
+        }
 
-        List<GoalAnalyzeData> goals =
-                goalRepository
-                        .findAll()
-                        .stream()
-                        .map(goalAnalyzeDataHandler::prepareData)
-                        .toList();
+        // Encontrar por Id.
 
-        return aiAnalyzeHistoryService
-                .analyzeHistoryExpenses(
-                        expenses,
-                        goals
-                );
-    }
+        public ExpenseResponse findById(Long id) {
+                Expense expense = expenseRepository.findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Expense not found: " + id));
+                return expenseHandler.getExpenseMapper().toResponse(expense);
+        }
 
+  
+        // Para análise de dados com ia
 
-    // Para o dashboard
+        // Geral
 
-    public DashboardSummaryResponse getDashboardSummary() {
+        public String analyzeHistory() {
 
-        List<Expense> expenses = expenseRepository.findAll();
+                List<ExpenseAnalyzeData> expenses =
+                        expenseRepository
+                                .findAllWithCategoryAndPerson()
+                                .stream()
+                                .map(expenseAnalyzeDataHandler::prepareData)
+                                .toList();
 
-        Double totalExpenses = expenses.stream()
-            .map(Expense::getCost)
-            .reduce(0.0, Double::sum);
+                List<GoalAnalyzeData> goals =
+                        goalRepository
+                                .findAll()
+                                .stream()
+                                .map(goalAnalyzeDataHandler::prepareData)
+                                .toList();
 
-        Double highestExpense = expenses.stream()
+                return aiAnalyzeHistoryService
+                        .analyzeHistoryExpenses(
+                                expenses,
+                                goals
+                        );
+        }
+
+        // Por pessoa
+
+        public String analyzeHistoryByPerson(String personName) {
+
+                List<ExpenseAnalyzeData> expenses =
+                        expenseRepository
+                                .findAllByPersonName(personName)
+                                .stream()
+                                .map(expenseAnalyzeDataHandler::prepareData)
+                                .filter(expense ->
+                                        expense.getPersonName()
+                                                .equalsIgnoreCase(personName))
+                                .toList();
+
+                        List<GoalAnalyzeData> goals =
+                                goalRepository
+                                        .findAll()
+                                        .stream()
+                                        .map(goalAnalyzeDataHandler::prepareData)
+                                        .toList();
+
+                return aiAnalyzeHistoryService
+                        .analyzeHistoryExpenses(
+                                expenses,
+                                goals
+                        );
+        }
+
+        // Para o dashboard
+
+        public DashboardSummaryResponse getDashboardSummary() {
+
+                List<Expense> expenses = expenseRepository.findAll();
+
+                Double totalExpenses = expenses.stream()
                 .map(Expense::getCost)
-                .max(Double::compareTo)
-                .orElse(0.0);
+                .reduce(0.0, Double::sum);
 
-        Double averageExpense = expenses.isEmpty()
-                ? 0.0
-                : totalExpenses / expenses.size();
+                Double highestExpense = expenses.stream()
+                        .map(Expense::getCost)
+                        .max(Double::compareTo)
+                        .orElse(0.0);
 
-        Long totalRecords = (long) expenses.size();
+                Double averageExpense = expenses.isEmpty()
+                        ? 0.0
+                        : totalExpenses / expenses.size();
 
-        return new DashboardSummaryResponse(
-                totalExpenses,
-                highestExpense,
-                averageExpense,
-                totalRecords
-        );
-    }
+                Long totalRecords = (long) expenses.size();
 
-    @Transactional
-    public List<DashboardExpenseByCategory>
-            getExpensesByCategories() {
+                return new DashboardSummaryResponse(
+                        totalExpenses,
+                        highestExpense,
+                        averageExpense,
+                        totalRecords
+                );
+        }
 
-        return expenseRepository
-                .findExpensesByCategories();
-    }
+        @Transactional
+        public List<DashboardExpenseByCategory>
+                getExpensesByCategories() {
 
-    @Transactional
-    public List<DashboardExpenseByMonthAndYear>
-            getExpensesByMonthAndYear() {
+                return expenseRepository
+                        .findExpensesByCategories();
+        }
 
-        return expenseRepository
-                .findExpensesByMonthAndYear();
-    }
+        @Transactional
+        public List<DashboardExpenseByMonthAndYear>
+                getExpensesByMonthAndYear() {
+
+                return expenseRepository
+                        .findExpensesByMonthAndYear();
+        }
 
 
 

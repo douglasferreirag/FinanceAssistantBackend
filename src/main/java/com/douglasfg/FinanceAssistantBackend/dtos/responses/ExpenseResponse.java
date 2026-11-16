@@ -13,6 +13,6 @@ public class ExpenseResponse {
     private LocalDate expenseDate;
     private String personName;
     private String categoryName;
-    private long goalId;
+   
 
 }

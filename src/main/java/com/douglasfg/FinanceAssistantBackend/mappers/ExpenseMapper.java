@@ -21,6 +21,5 @@ public interface ExpenseMapper {
     // Converte entidade para DTO de saída (apenas dados principais)
     @Mapping(source = "person.name", target = "personName")
     @Mapping(source = "category.name", target = "categoryName")
-    @Mapping(source = "goal.id", target = "goalId")
     ExpenseResponse toResponse(Expense expense);
 }
